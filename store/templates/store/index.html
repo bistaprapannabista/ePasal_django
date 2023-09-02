@@ -1,0 +1,93 @@
+{% extends 'store/base.html' %} 
+{%load custom_filters%}
+
+{% block title %}Homepage{% endblock title %} 
+{%block content %}
+<div class="d-flex justify-content-between gap-5 container mt-3">
+  <div class="categories col-md-3">
+    <ul class="list-group">
+      <li class="list-group-item {%if not category_id%}active{%endif%}">
+        <a
+          href="/"
+          class="text-decoration-none {%if not category_id%}text-white{%else%}text-black{%endif%}"
+          >All</a
+        >
+      </li>
+      {%for category in categories%}
+      <li
+        class="list-group-item {%if category.id == category_id%}active{%endif%}"
+      >
+        <a
+          href="?category={{category.id}}"
+          class="text-decoration-none {%if category.id == category_id%}text-white{%else%}text-black{%endif%}"
+          >{{category.category_name}}</a
+        >
+      </li>
+      {%endfor%}
+    </ul>
+  </div>
+  <div class="products col-md-9">
+    <div class="jumbotron">
+      <h1 class="display-4">ePasal</h1>
+      <p class="lead">
+        Explore our online store for a curated selection of innovative and
+        elegant products. Discover limitless choices, secure transactions, and
+        convenient doorstep delivery today.
+      </p>
+      <form class="d-flex" role="search" method="get" action="/search">
+        <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+        </svg></button>
+      </form>
+      <hr class="my-4" />
+    </div>
+    <h4>
+      {%if selected_category%} {{selected_category}} {%else%} All {%endif%} -
+      Products
+    </h4>
+    <div class="row">
+      {%if products%} {%for product in products%}
+      <div class="col-md-3">
+        <a class="text-decoration-none text-black" href="/product/{{product.id}}">
+        <div class="card  list-card m-1">
+          <img
+            style="height: 200px"
+            src="{{product.product_image}}"
+            class="card-img-top img-fluid"
+            alt="..."
+          />
+          <div class="card-body">
+            <h5 class="card-title">
+              {{product.product_name|truncatechars:15}}
+            </h5>
+            <p class="text-danger" style="margin-bottom: 0">
+              {{product.product_price|currency}}
+            </p>
+            <small class="text-secondary"
+              ><strike>{{ product.product_price|increase_ten_percentage|currency}}</strike></small>
+            {% comment %} <a href="#" class="btn btn-primary">Go somewhere</a> {% endcomment%}
+            <div>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star checked"></span>
+              <span class="fa fa-star"></span>
+              <span class="fa fa-star"></span>
+            </div>
+          </div>
+        </div>
+        </a>
+      </div>
+      {%endfor%}
+    </div>
+    {%else%}
+    <p class="text-center">No records found...</p>
+    <img
+      height="450px"
+      src="https://img.freepik.com/free-vector/no-data-concept-illustration_114360-2506.jpg?w=1060&t=st=1693325673~exp=1693326273~hmac=4a9c68ed02f3766746e51304175f053218722676455d4ec480402233c79a65c1"
+      alt="..."
+    />
+    {%endif%}
+  </div>
+</div>
+{% endblock content %}

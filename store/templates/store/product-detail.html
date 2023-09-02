@@ -1,0 +1,60 @@
+{% extends 'store/base.html' %}
+{% load custom_filters %}
+{% block content %}
+<div class="px-5 py-2 mx-5">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="?category={{object.product_cateogory.id}}">{{object.product_category}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{object.product_name}}</li>
+    </ol>
+  </nav>
+  <div class="card p-5">
+    <div class="d-flex justify-content-between">
+    <div>
+        <img src="{{object.product_image.url}}" alt="..." height="500px" width="500px" class="border rounded"/>
+    </div>
+    <div>
+        <h1>{{object.product_name}}</h1>
+        <hr>
+        <h4 class="text-danger" style="margin-bottom: 0">
+            Rs. {{object.product_price}}
+        </h4>
+          <h6 class="text-secondary"
+            ><strike>Rs. {{ object.product_price|increase_ten_percentage}}</strike></h6>
+        <hr>
+        <p class="border rounded p-1">{{object.product_description}}</p>
+        <form method="post" action="/product/{{object.id}}">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{object.id}}" id="product_id"/>
+        {% comment %} <input type="hidden" value="{{object.product_count}}" id="product_count"/> {% endcomment %}
+        {% comment %} <span class="text-secondary me-5">Quantity</span> <div class="btn btn-danger" id="decrement" onclick="decrement()">-</div><input class="col-1" style="border:none;text-align:center" id="product_selected_count" name="product_selected_count" value="0"></input><div class="btn btn-primary" id="increment" onclick="increment()">+</div> {% endcomment %}
+        {%if object.id|is_in_cart:request.session.cart%}
+        <div class="d-flex gap-3">
+            <button class="btn btn-secondary" name="remove" value="true">-</button>
+             <span class="h6 mt-2">{{request.session.cart|cart_count:object.id}} in cart</span>
+             <button class="btn btn-secondary" type="submit">+</button>
+        </div>
+        {%else%}
+        <button type="submit" class="btn btn-success">Add To Cart</button>
+        {%endif%}
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+<script>
+    const increment = () =>{
+        let x = parseInt(document.getElementById("count").value);
+        let product_count = parseInt(document.getElementById("product_count").value);
+        product_count>x?x++:none;
+        document.getElementById("count").value = x;
+    }
+
+    const decrement = () =>{
+        let x = parseInt(document.getElementById("count").value);
+        x>0?x--:none;
+        document.getElementById("count").value = x;
+    }
+</script>
+{% endblock content %}
